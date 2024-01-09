@@ -7,18 +7,14 @@ import lombok.Setter;
 import java.util.List;
 import java.util.Objects;
 
+@Setter
+@Getter
 public class User {
 
-    @Getter
-    @Setter
     private List<Authorities> authoritiesList;
     @NotBlank
-    @Getter
-    @Setter
     private String userName;
     @NotBlank
-    @Getter
-    @Setter
     private String password;
 
     public User(String userName, String password, List<Authorities> authoritiesList) {
