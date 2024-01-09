@@ -18,10 +18,5 @@ public class AuthorizationController {
     public List<Authorities> getAuthorities(@RequestParam("user") String user, @RequestParam("password") String password) {
         return service.getAuthorities(user, password);
     }
-
-    @PostMapping
-    @ResponseBody
-    public List<Authorities> setAuthorities(@RequestParam("user") String user, @RequestParam("password") String password) {
-        return service.getAuthorities(user, password);
-    }
+    
 }
