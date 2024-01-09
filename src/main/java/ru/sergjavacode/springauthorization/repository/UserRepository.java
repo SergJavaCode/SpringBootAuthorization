@@ -10,19 +10,21 @@ import java.util.stream.Stream;
 
 @Repository
 public class UserRepository {
-    private Set<User> usersList = new HashSet<>(); //используем хэшсет для исключения колизий по имени пользователя
+    private final Set<User> usersList = new HashSet<>(); //используем хэшсет для исключения колизий по имени пользователя
 
     public List<Authorities> getUserAuthorities(String user, String password) {
         testAddUser(); //временный метод, заполняющий репозиторий тестовым объектом User (для тестирования)
         Optional<User> currentUser = usersList.stream()
-                .filter(x -> x.getUserName().equals(user) && x.getPassword().equals(password))
+                .filter(x -> x.getUser().equals(user) && x.getPassword().equals(password))
                 .collect(Collectors.toCollection(ArrayList::new))
                 .stream().findFirst();  // если логин и пасс валидны, получаем соответствующий объект юзера
-        return currentUser.orElse(new User("userEmpty", "passwordEmpty", null)).getAuthoritiesList();
+        return currentUser.orElse(new User("userEmpty", "passwordEmpty")).getAuthoritiesList();
     }
 
     //временный метод, заполняющий репозиторий тестовым объектом User (для тестирования)
     public void testAddUser() {
-        usersList.add(new User("userTest", "passwordTest", Stream.of(Authorities.READ, Authorities.DELETE).toList()));
+        User testUser =new User("userTest", "passwordTest");
+        testUser.setAuthoritiesList(List.of(Authorities.READ,Authorities.DELETE));
+        usersList.add(testUser);
     }
 }

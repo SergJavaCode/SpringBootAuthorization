@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.sergjavacode.springauthorization.exceptions.InvalidCredentials;
 import ru.sergjavacode.springauthorization.exceptions.UnauthorizedUser;
 import ru.sergjavacode.springauthorization.model.Authorities;
+import ru.sergjavacode.springauthorization.model.User;
 import ru.sergjavacode.springauthorization.repository.UserRepository;
 
 import java.util.List;
@@ -16,11 +17,11 @@ public class AuthorizationService {
         this.userRepository = userRepository;
     }
 
-    public List<Authorities> getAuthorities(String user, String password) {
-        if (isEmpty(user) || isEmpty(password)) {
+    public List<Authorities> getAuthorities(User user) {
+        if (isEmpty(user.getUser()) || isEmpty(user.getPassword())) {
             throw new InvalidCredentials("User name or password is empty");
         }
-        List<Authorities> userAuthorities = userRepository.getUserAuthorities(user, password);
+        List<Authorities> userAuthorities = userRepository.getUserAuthorities(user.getUser(), user.getPassword());
         if (isEmpty(userAuthorities)) {
             throw new UnauthorizedUser("Unknown user " + user);
         }

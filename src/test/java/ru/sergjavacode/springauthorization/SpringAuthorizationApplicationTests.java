@@ -34,29 +34,29 @@ class SpringAuthorizationApplicationTests {
 
     @Test
     void invalidCredentialsExceptionalTest(ApplicationContext context) { //проверяем тип выбрасываемого исключения при исключительной ситуации
-        Exception exception = Assertions.assertThrows(InvalidCredentials.class, () -> context.getBean(AuthorizationService.class).getAuthorities("", ""));
+        Exception exception = Assertions.assertThrows(InvalidCredentials.class, () -> context.getBean(AuthorizationService.class).getAuthorities(new User("", "")));
         Assertions.assertEquals(InvalidCredentials.class, exception.getClass());
     }
 
     @Test
     void unauthorizedUserExceptionalTest(ApplicationContext context) {//проверяем тип выбрасываемого исключения при исключительной ситуации
-        Exception exception = Assertions.assertThrows(UnauthorizedUser.class, () -> context.getBean(AuthorizationService.class).getAuthorities("UserException", "PasswordException"));
+        Exception exception = Assertions.assertThrows(UnauthorizedUser.class, () -> context.getBean(AuthorizationService.class).getAuthorities(new User("UserException", "PasswordException")));
         Assertions.assertEquals(UnauthorizedUser.class, exception.getClass());
     }
 
     @Test
-    void simpleUserPasswordTest() {
+    void simpleUserPasswordTest() { //тест через рефлексию
         UserRepository userRepository = new UserRepository();
-        Set<User> usersList = null;
         Set<User> usersListTest = new HashSet<>();
         List<Authorities> authoritiesListTest = new ArrayList<>();
         authoritiesListTest.add(Authorities.READ);
         authoritiesListTest.add(Authorities.DELETE);
-        usersListTest.add(new User("testName", "testPassword", authoritiesListTest));
+        User testUser = new User("testName", "testPassword");
+        testUser.setAuthoritiesList(authoritiesListTest);
+        usersListTest.add(testUser);
         try {
             Field field = userRepository.getClass().getDeclaredField("usersList"); //устанавливаем значение приватного поля через рефлексию
             field.setAccessible(true);
-            usersList = (Set<User>) field.get(userRepository);
             field.set(userRepository, usersListTest);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

@@ -1,8 +1,11 @@
 package ru.sergjavacode.springauthorization.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,15 +14,17 @@ import java.util.Objects;
 @Getter
 public class User {
 
-    private List<Authorities> authoritiesList;
     @NotBlank
-    private String userName;
+    @Size(min = 3, max = 20, message
+            = "User name must be between 3 and 20 characters")
+    private String user;
     @NotBlank
+    @Size(min = 8, max = 20, message
+            = "User name must be between 8 and 20 characters")
     private String password;
-
-    public User(String userName, String password, List<Authorities> authoritiesList) {
-        this.authoritiesList = authoritiesList;
-        this.userName = userName;
+    private List<Authorities> authoritiesList;
+    public User(String userName, String password) {
+        this.user = userName;
         this.password = password;
     }
 
@@ -28,19 +33,19 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userName, user.userName) && Objects.equals(password, user.password);
+        return Objects.equals(user, user.user) && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userName, password);
+        return Objects.hash(user, password);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "authoritiesList=" + authoritiesList +
-                ", userName='" + userName + '\'' +
+                ", userName='" + user + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
